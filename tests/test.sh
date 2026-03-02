@@ -10,13 +10,15 @@ apt-get update
 apt-get install -y --no-install-recommends curl python3-pip python3-dev
 
 # ensure numpy is available for the reference implementation
-pip3 install --no-cache-dir numpy pytest==8.4.1 pytest-json-ctrf==0.3.5
+# Use the virtualenv's pip to ensure packages go to the right location
+/opt/venv/bin/pip install --no-cache-dir numpy pytest==8.4.1 pytest-json-ctrf==0.3.5
 
 # Create logs directory
 mkdir -p /logs/verifier
 
 # run pytest (will write /logs/verifier/score.txt)
-if pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA; then
+# Use the virtualenv's python to ensure all imports work correctly
+if /opt/venv/bin/python -m pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA; then
   TEST_PASSED=1
 else
   TEST_PASSED=0
@@ -31,6 +33,13 @@ if [ -f /logs/verifier/score.txt ]; then
 else
   # test failed before producing a score
   echo 0.0 > /logs/verifier/reward.txt
+fi
+
+# Fix permissions on session files to ensure they're readable by the host
+# This addresses issues where Docker container creates files with restrictive permissions
+if [ -d "/app/jobs" ]; then
+  chmod -R 755 /app/jobs || true
+  find /app/jobs -type f -exec chmod 644 {} \; || true
 fi
 
 echo "Test completed. Score: $(cat /logs/verifier/reward.txt)"
