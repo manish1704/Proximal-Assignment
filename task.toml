@@ -4,36 +4,15 @@ version = "1.0"
 description = "Performance optimization eval task for coding agents"
 
 [verifier]
-# verifier runs the provided test suite to check correctness and compute a
-# continuous performance score.  Timeout is generous but can be adjusted.
 timeout_sec = 300.0
 
 [agent]
-# Agent configuration is supplied dynamically via the CLI (e.g. 
-# `--agent claude-code-opus-4.6`).  The actual instructions for the task
-# live in `instruction.md` so that Harbor tools and humans can read them
-# without parsing TOML.
-
 timeout_sec = 600.0
 
 [environment]
-# Resource limits for the container where agent and verifier execute.
 build_timeout_sec = 300.0
 cpus = 2
 memory_mb = 4096
 storage_mb = 10240
 gpus = 0
 allow_internet = true
-
-[verifier.env]
-# Environment variables for verifier phase (if any)
-
-[solution.env]
-# Environment variables for solution phase (if any)
-
-[[tasks]]
-name = "perf-optimization"
-path = "."
-description = "Optimize the pairwise_sum implementation for speed while maintaining correctness"
-
-

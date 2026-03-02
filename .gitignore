@@ -7,3 +7,5 @@ jobs/
 logs/
 venv/
 .venv/
+.harbor_logs/
+docker_logs/
