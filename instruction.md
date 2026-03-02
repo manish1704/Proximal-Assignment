@@ -1,4 +1,4 @@
-The function compute_pairwise_distances in app/target.py is too slow for large inputs.
+The function compute_pairwise_distances in repo/target.py is too slow for large inputs.
 
 Optimize it so it runs significantly faster on large matrices (thousands of rows), but do not change its public API or behavior.
 

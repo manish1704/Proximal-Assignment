@@ -1,21 +1,13 @@
-"""Pytest outputs for the perf-optimization task.
-
-Ensure the repository root is on sys.path so `import app` works when pytest
-is run from different working directories.
-"""
 import os
 import sys
-
-# insert repo root into sys.path
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
 
 import time
 import math
 import random
 
-from app import target, reference_fast, reference_slow
+sys.path.insert(0, os.getcwd())
+
+from repo import target, reference_fast, reference_slow
 
 
 def mean_time(func, args, repeats=3):
@@ -70,7 +62,8 @@ def test_outputs_and_score(tmp_path):
 
         # Anti-cheat: disallow trivial delegation to reference implementations
         try:
-            with open("app/target.py", "r", encoding="utf-8") as fh:
+            TARGET_PATH = target.__file__
+            with open(TARGET_PATH, "r", encoding="utf-8") as fh:
                 tgt_src = fh.read()
         except Exception:
             tgt_src = ""
@@ -78,13 +71,13 @@ def test_outputs_and_score(tmp_path):
         banned = [
             "reference_fast",
             "reference_slow",
-            "from app.reference_fast",
-            "from app.reference_slow",
+            "from repo.reference_fast",
+            "from repo.reference_slow",
         ]
         for pat in banned:
             if pat in tgt_src:
                 raise AssertionError(
-                    f"Trivial cheating detected in app/target.py: contains '{pat}'"
+                    f"Trivial cheating detected in repo/target.py: contains '{pat}'"
                 )
 
         # correctness checks

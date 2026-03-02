@@ -16,7 +16,6 @@ apt-get install -y --no-install-recommends curl python3-pip python3-dev
 # Create logs directory
 mkdir -p /logs/verifier
 
-# run pytest (will write /logs/verifier/score.txt)
 # Use the virtualenv's python to ensure all imports work correctly
 if /opt/venv/bin/python -m pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA; then
   TEST_PASSED=1
@@ -25,8 +24,8 @@ else
 fi
 
 # If the verifier wrote a numeric score, pass that through to reward.txt
-if [ -f /logs/verifier/score.txt ]; then
-  SCORE=$(cat /logs/verifier/score.txt | tr -d '\n')
+if [ -f /logs/verifier/reward.txt ]; then
+  SCORE=$(cat /logs/verifier/reward.txt | tr -d '\n')
   # clamp to [0,1]
   CLAMPED=$(python3 -c "s = float('$SCORE') if '$SCORE' else 0.0; print(f'{max(0.0, min(1.0, s)):.6f}')")
   echo "$CLAMPED" > /logs/verifier/reward.txt
